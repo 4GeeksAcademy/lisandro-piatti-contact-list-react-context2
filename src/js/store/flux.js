@@ -27,8 +27,23 @@ const getState = ({ getStore, getActions, setStore }) => {
             setStore({ contactList: dataContacts.contacts });
             console.log(dataContacts);
           }
+          if (response.status == 404) {
+            try {
+              const createSlug = async () => {
+                const response = await fetch(
+                  "https://playground.4geeks.com/contact/agendas/lisandropiatti",
+                  {
+                    method: "POST",
+                  }
+                );
+              };
+              createSlug();
+            } catch (error) {
+              console.error(`error creating slug ---> ${error}`);
+            }
+          }
         } catch (error) {
-          console.error(error);
+          console.error(`getting contacts error ---> ${error}`);
         }
       },
 
@@ -53,9 +68,10 @@ const getState = ({ getStore, getActions, setStore }) => {
           if (response.ok) {
             const data = await response.json();
             console.log(data);
+            setStore((prevState) => [...prevState, data]);
           }
         } catch (error) {
-          console.error(error);
+          console.error(`adding contact error ---> ${error}`);
         }
       },
 
@@ -70,10 +86,13 @@ const getState = ({ getStore, getActions, setStore }) => {
           );
           if (response.ok) {
             const data = await response.json();
-            console.log(data);
+
+            setStore({
+              contactList: store.contacts.filter((contact) => contact.id != id),
+            });
           }
         } catch (error) {
-          console.error(error);
+          console.error(`error contact delete ---> ${error}`);
         }
       },
 
