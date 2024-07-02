@@ -77,6 +77,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
       // eliminar un contacto
       deleteContact: async (id) => {
+        const store = getStore();
         try {
           const response = await fetch(
             `https://playground.4geeks.com/contact/agendas/lisandropiatti/contacts/${id}`,
@@ -85,14 +86,42 @@ const getState = ({ getStore, getActions, setStore }) => {
             }
           );
           if (response.ok) {
-            const data = await response.json();
-
             setStore({
-              contactList: store.contacts.filter((contact) => contact.id != id),
+              contactList: store.contactList.filter(
+                (contact) => contact.id != id
+              ),
             });
           }
         } catch (error) {
           console.error(`error contact delete ---> ${error}`);
+        }
+      },
+
+      // editar un contacto
+      editContact: async (contact, id) => {
+        const store = getStore();
+        const actions = getActions();
+
+        try {
+          const response = await fetch(
+            `https://playground.4geeks.com/contact/agendas/lisandropiatti/contacts/${id}`,
+            {
+              method: "PUT",
+              body: JSON.stringify(contact),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await response.json();
+          if (response.ok) {
+            actions.getContacts();
+            return true;
+          }
+          return false;
+        } catch (error) {
+          console.error("Error", error);
+          return false;
         }
       },
 

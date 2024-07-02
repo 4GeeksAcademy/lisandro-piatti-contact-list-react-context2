@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { Context } from "../store/appContext";
 
@@ -8,6 +8,7 @@ import "../../styles/demo.css";
 export const AddContact = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
+  const params = useParams();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -16,22 +17,50 @@ export const AddContact = () => {
     address: "",
   });
 
-  const handlerSubmit = (e) => {
+  const handlerSubmit = async (e) => {
     e.preventDefault();
-    actions.addContact(formData);
+
+    const response = !params.id
+      ? await actions.addContact(formData)
+      : await actions.editContact(formData, params.id);
+
     setFormData({
       name: "",
       email: "",
       phone: "",
       address: "",
     });
-    navigate("/");
+
+    if (response) {
+      navigate("/");
+    }
   };
+
+  useEffect(() => {
+    if (params.id) {
+      const id = Number(params.id);
+      const existingContact = store.contactList.find(
+        (contact) => contact.id === id
+      );
+      if (existingContact) {
+        setFormData(existingContact);
+      }
+    } else {
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        address: "",
+      });
+    }
+  }, [params.id, store.contactList]);
 
   return (
     <div className="container">
       <div>
-        <h1 className="text-center mt-5">Add a new contact</h1>
+        <h1 className="text-center mt-5">
+          {!params.id ? "Add a new contact" : "Edit contact "}
+        </h1>
         <form onSubmit={handlerSubmit}>
           <div className="form-group">
             <label>Name</label>
@@ -112,7 +141,3 @@ export const AddContact = () => {
     </div>
   );
 };
-
-/**
- * (
- */

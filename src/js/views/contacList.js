@@ -12,8 +12,8 @@ export const ContactList = () => {
   }, []);
 
   return (
-    <div className="container">
-      <ul className="list-group">
+    <div className="container-fluid w-75">
+      <div>
         {store.contactList.map((item, index) => {
           return (
             <ContactCard
@@ -23,33 +23,10 @@ export const ContactList = () => {
               phone={item.phone}
               email={item.email}
               id={item.id}
-              deleteContact={() => actions.deleteContact(item.id)}
-              update={() => deleteContact()}
             />
-            // <li
-            //   key={index}
-            //   className="list-group-item d-flex justify-content-between"
-            // >
-            //   {item.name}
-            //   <div>
-            //     <button className="btn" onClick={() => actions.deleteContact()}>
-            //       <i className="fas fa-pencil-alt mr-3" />
-            //     </button>
-            //     <button
-            //       className="btn"
-            //       onClick={() => actions.deleteContact(item.id)}
-            //     >
-            //       <i className="fas fa-trash-alt" />
-            //     </button>
-            //   </div>
-            // </li>
           );
         })}
-      </ul>
-      <br />
-      <Link to="/">
-        <button className="btn btn-primary">Back home</button>
-      </Link>
+      </div>
     </div>
   );
 };
