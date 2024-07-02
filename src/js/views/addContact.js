@@ -31,9 +31,7 @@ export const AddContact = () => {
       address: "",
     });
 
-    if (response) {
-      navigate("/");
-    }
+    navigate("/");
   };
 
   useEffect(() => {
